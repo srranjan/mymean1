@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mymongo
+  labels:
+    app: mymongo
+    lab: kuber-lab1
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mymongo
+  template:
+    metadata:
+      labels: 
+        app: mymongo
+        lab: kuber-lab1
+    spec:
+      containers: 
+      - name: mymongo
+        image: gcr.io/myk8proj/mymongodb:v1
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits :
+            cpu: 0.5
+        ports: 
+        - containerPort: 27017
+          name: mymongo
+        volumeMounts:
+          # name must match the volume name below
+        - name: mymongo-persistent-volume
+          # mount path within the container
+          mountPath: /data/db
+      volumes:
+      - name: mymongo-persistent-volume
+        persistentVolumeClaim:
+          claimName: mymongopvc
